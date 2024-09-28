@@ -110,16 +110,18 @@ blockquote {
 }
 
 /* links */
-
 a {
+  color: rgb(6, 70, 155);
   &:focus {
     @extend %tab-focus;
+    color: brown; /* Blue for focus */
   }
 
   &:hover,
   &:active {
     outline: 0;
-  }
+    color:brown; /* Darker blue for hover/active */
+}
 }
 
 /* code */

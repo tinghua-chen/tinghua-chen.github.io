@@ -1,31 +1,35 @@
 ---
-title: 'Reanalyzing the Artificial Gut Dataset using MultiAddGPs'
-date: 2024-09-26
-permalink: /posts/blog-post-4/
+title: 'Reanalyzing the Mallard Dataset using MultiAddGPs'
+date: 2024-08-26
+permalink: /posts/multiaddgps
 tags:
   - cool posts
   - category1
   - category2
 ---
 
+
+
+ ## Reanalyzing the Mallard Dataset from Silverman et al. (2018)
+
 MultiAddGPs are designed for modeling a mix of linear and non-linear factors in compositional count data. In this post, I'll walk you through a reanalysis of the mallard dataset from Silverman et al. (2018) to show how you can apply MultiAddGP modeling in a real-world microbiome study.
 
 The dataset contains over 500 samples collected from 4 idependent artificial gut vessels, taken at irregular time intervals. What makes this dataset interesting is that Vessels 1 and 2 experienced starvation around days 11 and 13, while Vessels 3 and 4 were left untouched as controls. Here's a visual to give you a sense of what the data looks like:
     
-![alt text](../../images//Artificial%20_gut_data_diagram.jpg)
-## What We’ll Cover
+![alt text](../Artificial%20_gut_data_diagram.jpg)
+### What We’ll Cover
 In this post, I’ll walk you through three key aspects of the analysis:
 
 + How to use MultiAddGPs (via the *basset* tool in the fido package) to model additive Gaussian Processes and how to isolate the effects of food disruption.
 + How to model four independent vessels or how to model four concurrent time sereis simultaneously using block identity matrices.
 + How to select the model’s hyperparameters using Penalized Maximum Marginal Likelihood (MML).
 
-## Before You Begin: Recommended Reading
+### Before You Begin: Recommended Reading
 If you’re new to MultiAddGPs or *basset*, I recommend first going through the *basset* vignette, which introduces the basic concepts. It’s a great starting point for understanding how MultiAddGPs work, and you can check it out [here](https://jsilve24.github.io/fido/articles/non-linear-models.html).
 
 OK, Let's get started!
 
-## Data preprocessing
+### Data preprocessing
 To start, the data preprocessing steps mostly follow the analysis by Silverman et al. (2018). Below is the code I used to prepare the data and set up the design matrix for the model:
 ```r   
 library(fido)
@@ -100,7 +104,7 @@ C <- nrow(X)
 ```
 
 
-## The Modeling Process
+### The Modeling Process
 
 Since our goal here is to isolate the impact of feed disruption, we approached the problem by breaking it down into two overlapping processes: 
 - A long-term trend specific to each vessel ($f^{(\text{base}, v)}$) 
@@ -211,47 +215,47 @@ Model <- function(
 }
 ```
 
-## Modeling Concurrent Time Series Jointly
+### Modeling Concurrent Time Series Jointly
 
 To jointly model the four concurrent time series (4 vessels), we use block identity matrices $ \mathbf{\Gamma}^{v}$, structured as follows:
 
 $$
-\mathbf{\Gamma}^{(v)} \odot \mathbf{\Gamma}^{(\text{base})} =  
+\bm{\Gamma}^{(v)} \odot \bm{\Gamma}^{(\text{base})} =  
 \begin{bmatrix}
-    \mathbf{\Gamma}^{(v=1,\text{base})} & 0 & 0 & 0 \\
-    0  & \mathbf{\Gamma}^{(v=2,\text{base})} & 0 & 0 \\
-    0 & 0 & \mathbf{\Gamma}^{(v=3,\text{base})} & 0 \\
-    0 & 0 & 0 & \mathbf{\Gamma}^{(v=4,\text{base})}
+    \bm{\Gamma}^{(v=1,\text{base})} & 0 & 0 & 0 \\
+    0  & \bm{\Gamma}^{(v=2,\text{base})} & 0 & 0 \\
+    0 & 0 & \bm{\Gamma}^{(v=3,\text{base})} & 0 \\
+    0 & 0 & 0 & \bm{\Gamma}^{(v=4,\text{base})}
 \end{bmatrix}
 $$
 
-Each of $\mathbf{\Gamma}^{(v=i,\text{base})}$ is a $V_i$ dimension of covariance matrix ($V_i$ is the dimension of $i$ vessel). That means, the dimension of $\mathbf{\Gamma}^{(v)} \odot \mathbf{\Gamma}^{(\text{base})}$ must be a $N \times N$ matrix, where $N = V_1+V_2+V_3+V_4$. 
+Each of $\bm{\Gamma}^{(v=i,\text{base})}$ is a $V_i$ dimension of covariance matrix ($V_i$ is the dimension of $i$ vessel). That means, the dimension of $\bm{\Gamma}^{(v)} \odot \bm{\Gamma}^{(\text{base})}$ must be a $N \times N$ matrix, where $N = V_1+V_2+V_3+V_4$. 
 
 
 For vessels experiencing disruption, we apply a similar approach, but limit it to Vessels 1 and 2:
 
 $$
 \begin{align*}
-    \mathbf{\Gamma}^{(v)} \odot \mathbf{\Gamma}^{(\text{disrupt})} =  
+    \bm{\Gamma}^{(v)} \odot \bm{\Gamma}^{(\text{disrupt})} =  
     \begin{bmatrix}
-        \mathbf{\Gamma}^{(v=1,\text{disrupt})} & 0 \\
-        0  & \mathbf{\Gamma}^{(v=2,\text{disrupt})}\\
+        \bm{\Gamma}^{(v=1,\text{disrupt})} & 0 \\
+        0  & \bm{\Gamma}^{(v=2,\text{disrupt})}\\
     \end{bmatrix}
 \end{align*}
 $$
 
-These matrices serve as the covariance structures for the vessel-specific long-term trends $ \mathbf{f}^{(\text{base}, v)} $ and disruption effects $ \mathbf{f}^{(\text{disrupt}, v)} $. Since the vessels are physically isolated from each other, covariances between different vessels are set to zero (e.g., $ \text{cov}(\mathbf{\Gamma}^{(v=1,\text{base})}, \mathbf{\Gamma}^{(v=2,\text{base})}) = 0 $).
+These matrices serve as the covariance structures for the vessel-specific long-term trends $ \mathbf{f}^{(\text{base}, v)} $ and disruption effects $ \mathbf{f}^{(\text{disrupt}, v)} $. Since the vessels are physically isolated from each other, covariances between different vessels are set to zero (e.g., $ \text{cov}(\bm{\Gamma}^{(v=1,\text{base})}, \bm{\Gamma}^{(v=2,\text{base})}) = 0 $).
 
 All mean functions are set to zero, such that $ \mathbf{\Theta}^{(\text{base},v)} = 0 $. We use a squared exponential kernel to model the long-term nonlinear trends in $ \mathbf{\Gamma}^{(\text{base})} $:
 
 $$
-\mathbf{\Gamma}^{(\text{base})} = \sigma_{\text{base}}^2 \exp\left(- \frac{(t - t')^2}{2 \rho_{\text{base}}^2} \right)
+\bm{\Gamma}^{(\text{base})} = \sigma_{\text{base}}^2 \exp\left(- \frac{(t - t')^2}{2 \rho_{\text{base}}^2} \right)
 $$
 
 For the disruption effects, we use a rational quadratic kernel, set to zero before day 10. This reflects the assumption that the target variable may exhibit smoothness or irregularities starting from the starvation period:
 
 $$
-\mathbf{\Gamma}^{(\text{disrupt})} = \sigma_{\text{disrupt}}^2 \left( 1 + \frac{(t - t')^2}{2a \rho_{\text{disrupt}}^2} \right)^{-a} \mathbf{I}(t \geq 11 \, \& \, t' \geq 11)
+\bm{\Gamma}^{(\text{disrupt})} = \sigma_{\text{disrupt}}^2 \left( 1 + \frac{(t - t')^2}{2a \rho_{\text{disrupt}}^2} \right)^{-a} \mathbf{I}(t \geq 11 \, \& \, t' \geq 11)
 $$
 
 Here, $ \mathbf{I}(t \geq 11 \, \& \, t' \geq 11) $ is also a block identity matrix but reflects the fact that disruption occurs only after day 11, and its effects persist through the rest of the study.
@@ -284,7 +288,7 @@ SE <- function(X, sigma = 1, rho = median(as.matrix(dist(t(X)))),
 ```
     
 
-## Hyperparameter Tuning in Our Model: Finding the Sweet Spot
+### Hyperparameter Tuning in Our Model: Finding the Sweet Spot
 
 Hyperparameter selection is always a critical part of modeling, whether you're dealing with linear or non-linear functions (like choosing the right kernel parameters). But with our model, we can push the flexibility even further. Hyperparameter optimization isn’t limited to just the kernel function—it can also extend to the mean function or even log-ratio transformations, like  $f(\Eta; \Omega)$. 
 
@@ -299,9 +303,9 @@ $$
 \end{align*}
 $$
 
-We chose $\alpha_1 = 10$, $\beta_1 = 20$, and $\alpha_2 = 10$, $\beta_2 = 10$ for $\mathbf{\Gamma}^{(\text{base})}$. For $\mathbfcode/tinghua-chen.github.io/_posts/2199-01-01-future-post.md{\Gamma}^{(\text{disrupt})}$, we used $\alpha_1 = 10$, $\beta_1 = 10$, and $\alpha_2 = 10$, $\beta_2 = 20$. 
+We chose $\alpha_1 = 10$, $\beta_1 = 20$, and $\alpha_2 = 10$, $\beta_2 = 10$ for $\bm{\Gamma}^{(\text{base})}$. For $\bm{\Gamma}^{(\text{disrupt})}$, we used $\alpha_1 = 10$, $\beta_1 = 10$, and $\alpha_2 = 10$, $\beta_2 = 20$. 
 
-![alt text](../../images/prior_density.png)
+![alt text](../prior_density.png)
 
 
 Note we fixed the $a$ parameter in the rational quadratic kernel at 2. This parameter controls how much weight is given to large-scale vs. small-scale variations. By doing these specification, we’re essentially saying we don't expect the model to learn extreme length scales—whether very small or very large—since these wouldn’t make sense given the time intervals in the data. So, the prior helps to keep the model in check, preventing it from overfitting to unusual patterns.
@@ -446,7 +450,7 @@ p <- ggplot(predicted_clr_tidy,aes(x=Hour,y=mean))+
       annotate("rect", xmin = 240, xmax = 264, ymin = -Inf, ymax = Inf, fill = "#717D7E", alpha = 0.15) 
 ```
 
-![alt text](../../images/AllVessels.png)
+![alt text](../AllVessels.png)
 
 As you can see, the plot describe clear disruption effect around Day 11-13 (gray area). Yah!
 
@@ -523,7 +527,6 @@ disruption_plot <- ggplot(data = dis_allcoord, aes(x = time, y = mean)) +
                       labs(x= "Hour")
 
 ```
-![alt text](../../images/Disruption.png)
-
+![alt text](../Disruption.png)
 
 Boom!💥💥💥
