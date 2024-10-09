@@ -8,7 +8,7 @@ html {
 }
 
 body {
-  margin: 0;
+  margin: 10;
   padding: $masthead-height 0 0;
   padding-bottom: 9em;
   color: $text-color;
@@ -111,16 +111,16 @@ blockquote {
 
 /* links */
 a {
-  color: rgb(6, 70, 155);
+  color: rgb(191, 0, 64);
   &:focus {
     @extend %tab-focus;
-    color: brown; /* Blue for focus */
+    color: rgb(191, 0, 64); /* Blue for focus */
   }
 
   &:hover,
   &:active {
     outline: 0;
-    color:brown; /* Darker blue for hover/active */
+    color:rgb(191, 0, 64); /* Darker blue for hover/active */
 }
 }
 
