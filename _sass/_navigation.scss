@@ -131,7 +131,7 @@
     font-weight: bold;
     text-align: center;
     text-decoration: none;
-    color: mix(#fff, $gray, 50%);
+    color: black;
     border: 1px solid $light-gray;
     border-radius: $border-radius;
 
@@ -151,7 +151,7 @@
     }
 
     &.disabled {
-      color: mix(#fff, $gray, 75%);
+      color: black;
       pointer-events: none;
       cursor: not-allowed;
     }
@@ -172,20 +172,25 @@
    Priority plus navigation
    ========================================================================== */
 
+//NOTE Tinghua here you can change the color and size of the naviation button
+
 .greedy-nav {
   position: relative;
   min-width: 250px;
-  background: $background-color;
+  // background: rgb(191, 0, 64);
+  background: #e9ecef; // NOTE Tinghua set the background color of button 
 
   a {
     display: block;
     margin: 0 1rem;
     padding: 0.5rem 0;
-    color: $masthead-link-color;
+    color: #2b2d42; // NOTE Tinghua set the color of font
     text-decoration: none;
+    font-size:large ;
+    font-family:'Arial';
 
     &:hover {
-      color: $masthead-link-color-hover;
+      color: #2b2d42;// NOTE Tinghua set the color of font when hover
     }
   }
 
@@ -204,6 +209,7 @@
 
   .visible-links {
     display: table;
+    
 
     li {
       display: table-cell;
@@ -252,6 +258,7 @@
   }
 
   .hidden-links {
+    
     position: absolute;
     top: 100%;
     right: 0;
@@ -259,7 +266,7 @@
     padding: 5px;
     border: 1px solid $border-color;
     border-radius: $border-radius;
-    background: #fff;
+    background:  rgb(191, 0, 64);;
     box-shadow: 0 0 10px rgba(#000, 0.25);
 
     a {
