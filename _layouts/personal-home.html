@@ -1,0 +1,118 @@
+---
+layout: compress
+---
+
+{% include base_path %}
+
+<!doctype html>
+<html lang="{{ site.locale | slice: 0,2 }}" class="no-js">
+  <head>
+    {% include head.html %}
+    {% include head/custom.html %}
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Overpass:300,300i,400,700&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Overpass:300,300i,400,700&amp;display=swap"></noscript>
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:400,900&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:400,900&amp;display=swap"></noscript>
+  </head>
+
+  <body class="personal-home">
+    {% include browser-upgrade.html %}
+
+    <div class="personal-home__wrapper">
+      <header>
+        <h1><a href="{{ '/' | relative_url }}">{{ site.author.name }}</a></h1>
+
+        {% if site.author.avatar %}
+          <img
+            class="personal-home__avatar"
+            src="{{ site.author.avatar | prepend: '/images/' | relative_url }}"
+            alt="{{ site.author.name }}"
+            style="width: 220px; max-width: 100%; height: auto; border-radius: 15px; display: block; margin: 0 0 20px;"
+          >
+        {% endif %}
+
+        <p>Fourth-year Ph.D. student at Penn State University</p>
+
+        <nav class="personal-home__profile-links" aria-label="Profile links">
+          {% if site.author.googlescholar %}
+            <div>
+              <a href="{{ site.author.googlescholar }}" target="_blank" rel="noopener">
+                <img src="{{ '/images/google_scholar_logo.png' | relative_url }}" alt="Google Scholar">Google Scholar
+              </a>
+            </div>
+          {% endif %}
+          {% if site.author.github %}
+            <div>
+              <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-github" aria-hidden="true"></i>GitHub
+              </a>
+            </div>
+          {% endif %}
+          {% if site.author.linkedin %}
+            <div>
+              <a href="https://www.linkedin.com/in/{{ site.author.linkedin }}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-linkedin" aria-hidden="true"></i>LinkedIn
+              </a>
+            </div>
+          {% endif %}
+        </nav>
+      </header>
+
+      <section>
+        <nav class="personal-home__nav" aria-label="Homepage sections">
+          <a class="personal-home__nav-about" href="#about">About</a>
+          <a class="personal-home__nav-research" href="#research">Research</a>
+          <a class="personal-home__nav-publications" href="#publications">Publications</a>
+          <a class="personal-home__nav-contact" href="#contact">Contact</a>
+        </nav>
+
+        <h2>About</h2>
+        <div id="about">
+          {{ content }}
+        </div>
+
+        <hr>
+        <h2>Research Overview</h2>
+        <div id="research">
+          <p><strong>Causal Machine Learning for Imperfect Data</strong>: I develop robust, scalable, and theoretically grounded methods for causal inference when data are incomplete, noisy, or aggregated. My work focuses on reliable models for settings with latent variables, measurement error, and unobserved confounding.</p>
+
+          <p><strong>Scalable Bayesian Modeling</strong>: I build interpretable models for complex longitudinal count and compositional data, including generalized Gaussian processes and generalized dynamic linear models. This work pairs flexible modeling with efficient inference through a parallelized C++ backend and R interface.</p>
+
+          <p><strong>Scientific and Social Applications</strong>: I apply these methods to data-rich scientific settings where the underlying signals are only partially observed, including microbiome and genomic sequence count data, as well as social science problems involving aggregate and observational data, such as elections.</p>
+
+        </div>
+
+        <hr>
+        <h2>Papers</h2>
+        <div id="publications">
+          <h3>Under Review</h3>
+          <ol>
+            <li><a href="https://arxiv.org/pdf/2410.03911"><strong>Bayesian Multinomial Logistic Normal Additive Regression for Microbiome Data Analysis</strong></a> (2025). <em>Under review</em>. <span class="coauthors">With Michelle Pistner Nixon, Lawrence A. David, and Justin D. Silverman.</span></li>
+          </ol>
+
+          <h3>Published Papers</h3>
+          <ol start="2">
+            <li><a href="https://arxiv.org/pdf/2410.05548v2"><strong>Scalable Inference for Bayesian Multinomial Logistic-Normal Dynamic Linear Models</strong></a> (2025). <em>AISTATS</em>. <span class="coauthors">With Manan Saxena and Justin D. Silverman.</span></li>
+            <li><a href="https://arxiv.org/pdf/2405.18671"><strong>Watermarking Counterfactual Explanations</strong></a> (2025). <em>PRICAI, <a href="https://tinghua-chen.github.io/files/pricai2025-bspa.pdf">best paper award</a></em>. <span class="coauthors">With Hangzhi Guo, Firdaus Ahmed Choudhury, and Amulya Yadav.</span></li>
+            <li><a href="https://www.sciencedirect.com/science/article/abs/pii/S026499932300113X"><strong>Generalizing the “Masterpiece Effect” in fine art pricing: Quantile Hedonic regression results for the South African fine art market, 2009–2021</strong></a> (2023). <em>Economic Modelling</em>, 124, 106301. <span class="coauthors">With Johannes W. Fedderke.</span></li>
+          </ol>
+
+          {% if site.author.googlescholar %}
+            <p><a href="{{ site.author.googlescholar }}">View all publications on Google Scholar →</a></p>
+          {% endif %}
+        </div>
+
+        <hr>
+        <h2>Contact</h2>
+        <p id="contact">
+          {% if site.author.email %}
+            Email: <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a><br>
+          {% endif %}
+          Office: Westgate E343
+        </p>
+      </section>
+    </div>
+
+    {% include scripts.html %}
+  </body>
+</html>
